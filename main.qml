@@ -16,7 +16,8 @@ ApplicationWindow {
             var url=fileDialog.fileUrl
             console.log("You chose: " + url)
             
-            image_loader.loadImage(url)
+            var result = image_loader.loadImage(url)
+            console.log(result)
             var str =url.toString()
             var array=str.split('/')
             var name = array[array.length-1]

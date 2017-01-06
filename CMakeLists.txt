@@ -18,7 +18,7 @@ find_package( OpenCV REQUIRED )
 
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-add_executable( Train train.cpp )
+add_executable( Train train.cpp common.cpp)
 
 target_link_libraries( Train ${OpenCV_LIBS} )
 
@@ -28,7 +28,7 @@ target_link_libraries(Train Qt5::Widgets)
 
 qt5_add_resources(RESOURCES qml.qrc)
 
-add_executable( App main.cpp ImageLoader.cpp ImageConverter.cpp ImageProvider.cpp ${RESOURCES})
+add_executable( App main.cpp ImageLoader.cpp ImageConverter.cpp ImageProvider.cpp common.cpp ${RESOURCES})
 
 qt5_use_modules(App Quick Core Network)
 
