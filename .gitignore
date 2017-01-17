@@ -17,3 +17,5 @@ qrc_qml.cpp
 *.depends
 101_ObjectCategories/
 2/
+BACKGROUND_Google
+*~
