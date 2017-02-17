@@ -19,3 +19,7 @@ qrc_qml.cpp
 2/
 BACKGROUND_Google
 *~
+*.jpg
+.idea/
+.vscode/
+backup/

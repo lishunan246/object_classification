@@ -1,7 +1,6 @@
 #include "common.h"
 
-//QString dir = "2";
-QString dir = "101_ObjectCategories";
+
 std::string dictionary_filename = "dictionary.xml";
 std::string training_data_filename = "training_data.xml";
 std::string svm_filename = "svm.xml";
@@ -51,7 +50,7 @@ struct SURFDetector
 auto matcher = cv::DescriptorMatcher::create("FlannBased");
 SURFDetector surf;
 
-int dictionarySize = 1500;
+int dictionarySize = 500;
 cv::TermCriteria tc(CV_TERMCRIT_ITER, 10, 0.001);
 int retries = 1;
 int flags = cv::KMEANS_PP_CENTERS;
@@ -74,7 +73,7 @@ void bow_img_desciptor_extractor_from_file()
 
 void catalog_init()
 {
-	QDirIterator it(dir, QDirIterator::Subdirectories);
+	QDirIterator it(train_dir, QDirIterator::Subdirectories);
 	int catalog_cnt = 0;
 	int file_cnt = 0;
 	while (it.hasNext())
@@ -98,7 +97,7 @@ void catalog_init()
 
 void get_vocabulary()
 {
-	QDirIterator it(dir, QDirIterator::Subdirectories);
+	QDirIterator it(train_dir, QDirIterator::Subdirectories);
 	int catalog_cnt = 0;
 	int file_cnt = 0;
 	while (it.hasNext())
@@ -150,7 +149,7 @@ void get_training_data()
 	auto trainingData = cv::Mat(0, dictionarySize, CV_32FC1);
 	bow_img_desciptor_extractor_from_file();
 
-	QDirIterator it(dir, QDirIterator::Subdirectories);
+	QDirIterator it(train_dir, QDirIterator::Subdirectories);
 	int catalog_cnt = 0;
 	while (it.hasNext())
 	{
@@ -206,12 +205,12 @@ void trainSVM()
 	auto svm = cv::ml::SVM::create();
 	svm->setType(cv::ml::SVM::C_SVC);
 	svm->setKernel(cv::ml::SVM::RBF);
-	//svm->setGamma(0.50625000000000009);
+	svm->setGamma(0.50625000000000009);
 	svm->setTermCriteria(cvTermCriteria(CV_TERMCRIT_ITER, 100, 0.000001));
-	//svm->setC(312.50000000000000);
+	svm->setC(312.50000000000000);
 	auto train_data = cv::ml::TrainData::create(trainingData, cv::ml::ROW_SAMPLE, labels);
 
-	svm->trainAuto(train_data);
+	svm->train(train_data);
 	auto trained = svm->isTrained();
 	qDebug() << "svm trained: " << trained;
 
@@ -219,7 +218,7 @@ void trainSVM()
 }
 
 
-void evaluate()
+void evaluate(QString dir)
 {
 	if (bow_img_descriptor_extractor.getVocabulary().empty())
 		bow_img_desciptor_extractor_from_file();
@@ -228,6 +227,8 @@ void evaluate()
 	int catalog_cnt = 0;
 	auto svm = cv::ml::SVM::load<cv::ml::SVM>(svm_filename);
 	int error_cnt = 0;
+
+
 	while (it.hasNext())
 	{
 		auto filename = it.next();
@@ -255,6 +256,7 @@ void evaluate()
 			auto result = svm->predict(image_descriptor);
 			if (result != catalog_map[catalog])
 			{
+				qDebug() << QString::fromStdString(catalog_list[result]) << " " << filename << "error";
 				error_cnt++;
 			}
 		}
