@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <fstream>
+#include <QString>
 
 const QString train_dir = "train";
 const QString validate_dir = "validate";

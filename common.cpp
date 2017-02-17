@@ -1,6 +1,6 @@
 #include "common.h"
 
-
+#include <opencv2/ml.hpp>
 std::string dictionary_filename = "dictionary.xml";
 std::string training_data_filename = "training_data.xml";
 std::string svm_filename = "svm.xml";
@@ -225,7 +225,7 @@ void evaluate(QString dir)
 
 	QDirIterator it(dir, QDirIterator::Subdirectories);
 	int catalog_cnt = 0;
-	auto svm = cv::ml::SVM::load<cv::ml::SVM>(svm_filename);
+	auto svm = cv::ml::SVM::load(svm_filename);
 	int error_cnt = 0;
 
 
@@ -269,7 +269,7 @@ QString predic(const cv::Mat& img)
 	if (bow_img_descriptor_extractor.getVocabulary().empty())
 		bow_img_desciptor_extractor_from_file();
 
-	static auto svm = cv::ml::SVM::load<cv::ml::SVM>(svm_filename);
+	static auto svm = cv::ml::SVM::load(svm_filename);
 
 	std::vector<cv::KeyPoint> keypoints;
 	surf.detect(img, keypoints);
